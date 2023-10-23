@@ -19,7 +19,7 @@ What's the average utilisation?
 
 # Tools used
 1.Microsoft Excel
-2.Power BI
+2.Tableau
 3.SQL
 
 # Data Cleaning
@@ -30,7 +30,7 @@ I inserted an additional column for the customer age bracket (Young Adult, Middl
 I used conditional formatting to quickly highlight bank customers within the income category of "less than $40K".
 I inserted a few new columns for utilisation ratio categorisation (Low and High) and average utilisation percentage.
 
-#Analysis and Findings
+# Analysis and Findings
 How many customers have churned (attrition flag = 1)?
 Using the COUNTIF function, it was identified that 1,627 customers had churned (out of 10,127 customers).
 
@@ -43,8 +43,8 @@ Lastly, I did some data exploration using SQL to understand customers' behaviour
 What's the average utilisation?
 Analysis using both Microsoft Excel and SQL highlighted that the average utilisation ratio was 0.27.
 
-#Visualisations and Dashboard
-I then created a dashboard using Power BI to visualise my main findings.
+# Visualisations and Dashboard
+I then created a dashboard using Tableau visualise my main findings.
 
 # Recommendations and Insights
 1.The bank manager should focus on the areas where the bank is losing customers based on demographics. The insights showed that churn is typically coming from Females, the Middle Aged, those who are Married and Single, Blue Card Holders and those with a dependent count of 2/3 dependents.
