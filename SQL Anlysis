@@ -1,0 +1,135 @@
+# Data Exploration
+
+-- Retrieve all data from table 
+SELECT * FROM `bootcamp-394518.BankChurners.credit card customers`;
+
+-- Check for null values in Attrition_Flag to ensure that that there is no missing data in this column.
+SELECT * FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Attrition_Flag IS NULL;
+
+-- Retrieve total COUNT for Gender
+SELECT Gender, COUNT(Gender) AS Gender_Count
+FROM `bootcamp-394518.BankChurners.credit card customers`
+GROUP BY Gender;
+
+-- Retrieve Existing Customers and Attrited Customers by Gender. (more females have left the company's credit card services than males).
+-- Also more females who are existing customers than males. 
+SELECT Gender, Attrition_Flag, COUNT(Gender) AS Gender_Count
+FROM `bootcamp-394518.BankChurners.credit card customers`
+GROUP BY Gender, Attrition_Flag
+ORDER BY Attrition_Flag;
+
+-- credit card customers based on their marital status. 
+-- Majority of the customers are married, but a large amount are also single.
+SELECT Marital_Status, COUNT(Marital_Status)
+FROM `bootcamp-394518.BankChurners.credit card customers`
+GROUP BY Marital_Status;
+
+-- marital status count of the Attrited Customers shows that the majority of Attrited customers are married. A high proportion are also single. 
+SELECT Marital_Status, Attrition_Flag, COUNT(Marital_Status) AS Marital_Status_Count_Attrited_Customers
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Attrition_Flag = 'Attrited Customer'
+GROUP BY Marital_Status, Attrition_Flag;
+
+-- Count of the Card types for both Existing and Attrited Customers 
+-- Blue card type is the most popular
+-- Majority of customers who attrited had a blue card type. 
+SELECT Card_Category, Attrition_Flag, COUNT(Card_Category) AS Count_of_Card_Category
+FROM `bootcamp-394518.BankChurners.credit card customers`
+GROUP BY Card_Category, Attrition_Flag;
+
+--Attrition Count by Education Level
+SELECT Education_Level, COUNT(Education_Level) AS Count_Of_Education_Level
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Attrition_Flag = 'Attrited Customer'
+GROUP BY Education_Level
+ORDER BY Count_Of_Education_Level desc;
+
+--Attrition Count by Income Category
+SELECT Income_Category, COUNT(Income_Category) AS Count_Of_Income_Category
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Attrition_Flag = 'Attrited Customer'
+GROUP BY Income_Category
+ORDER BY Count_Of_Income_Category desc;
+
+--Average customers age 
+--Majority of attrited customers are middle aged
+--The average age of customers who have attrited is age 47.
+SELECT ROUND(AVG(Customer_Age),0) AS Average_Customer_Age
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Attrition_Flag = 'Attrited Customer';
+
+--Average dependent count for customers who have attrited. 
+--2 dependents.
+SELECT ROUND(AVG(Dependent_Count),0) AS Average_Dependent_Count
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Attrition_Flag = 'Attrited Customer';
+
+--Dependent Count for Attrited Customers broken down from 0 to 5 dependents for a better understanding of dependent count
+SELECT Attrition_Flag,Dependent_Count, COUNT(Dependent_Count) AS Count_of_Dependents_Attrited_Customer
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Attrition_Flag = 'Attrited Customer'
+GROUP BY Attrition_Flag, Dependent_Count
+ORDER BY Dependent_Count;
+
+--Gender Count based on females who have 2 and 3 dependents.
+SELECT Gender, Dependent_Count, COUNT(Gender) AS Count_By_Gender
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Dependent_Count IN (2, 3) AND Gender = 'Female' 
+GROUP BY Gender, Dependent_Count
+ORDER BY 2 asc;
+
+
+# Average utilization across demographics.
+
+--Average utilization ratio 
+SELECT ROUND(AVG(Avg_Utilization_Ratio),2) AS Avg_Utilization_Ratio
+FROM `bootcamp-394518.BankChurners.credit card customers`;
+
+-- Average utilization ratio by Gender. On average, females have a higher utilization ratio.  
+SELECT Gender, ROUND(AVG(Avg_Utilization_Ratio),2) AS Avg_Utilization_by_Gender
+FROM `bootcamp-394518.BankChurners.credit card customers`
+GROUP BY Gender;
+
+--Utilisation levels for female customers to identify those with high and low utilisation ratios.
+SELECT CLIENTNUM, Gender, Avg_Utilization_Ratio,
+CASE
+WHEN Avg_Utilization_Ratio <= 0.30 THEN 'Low Utilisation Ratio'
+WHEN Avg_Utilization_Ratio > 0.30 THEN 'High Utilisation Ratio'
+END AS Utilization_Ratio_Levels
+FROM `bootcamp-394518.BankChurners.credit card customers`
+WHERE Gender = 'Female'
+GROUP BY CLIENTNUM, Gender, Avg_Utilization_Ratio
+ORDER BY Avg_Utilization_Ratio;
+
+--Average utilization by card type
+SELECT Card_Category, ROUND(AVG(Avg_Utilization_Ratio),2) AS Avg_Utilization_by_Gender
+FROM `bootcamp-394518.BankChurners.credit card customers`
+GROUP BY Card_Category;
+
+-- Final Query to Create Predictive Dataset
+SELECT
+    CLIENTNUM,
+    Gender,
+    Marital_Status,
+    Card_Category,
+    Avg_Utilization_Ratio,
+    CASE
+        WHEN Attrition_Flag = 'Attrited Customer' THEN 1
+        ELSE 0
+    END AS Churned
+FROM `bootcamp-394518.BankChurners.credit card customers`;
+
+
+# Insights and Predictions
+
+-- From the analysis of customer demographics, we see the following:
+
+-- There are more female customers than males;
+-- Females have the highest attrition count; 
+-- The average age of attrited customers is 47; 
+-- Majority of customers who have attrited are married, followed by single customers;
+-- The average amount of dependents for attrited customers is 2 ;
+-- The blue card type has the highest amount of customers (existing and attrited);
+-- Those earning less than $40K have the highest attrition rate;
+--Majority of the banks customers are graduates. The highest amount of attrited customers are graduates.
